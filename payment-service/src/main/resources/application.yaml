@@ -2,17 +2,20 @@ logging:
   level:
     root: INFO
 spring:
-  datasource:
-    username: root
-    url: jdbc:mysql://localhost:3306/payment_db
-    password: root
+  application:
+    name: "Payment Service"
+  output:
+    ansi:
+      enabled: always
   jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: create
-
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/payment_db"
+    username: "aleksa"
+    password: "aleksa"
+    driver-class-name: org.postgresql.Driver
 server:
   port: 8083
   servlet:

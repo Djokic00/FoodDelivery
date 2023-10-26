@@ -2,18 +2,23 @@ logging:
   level:
     root: INFO
 spring:
+  application:
+    name: "Main Service"
+  output:
+    ansi:
+      enabled: always
   datasource:
-    username: root
-    url: jdbc:mysql://localhost:3306/main_db
-    password: root
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
   jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-    hibernate:
-      ddl-auto: create
-
+    database-platform: org.hibernate.dialect.H2Dialect
 server:
   port: 8080
   servlet:
     context-path: "/api"
+
+
+food-service-url: "http://localhost:8081/api/food"
+order-service-url: "http://localhost:8082/api/orders"
+payment-service-url: "http://localhost:8083/api/payments"
+#saga-service-url: "http://localhost:8084/api/saga"

@@ -1,11 +1,11 @@
-package com.fooddelivery.paymentservice.dto.request;
+package com.fooddelivery.mainservice.dto.request;
 
-import com.fooddelivery.paymentservice.model.PaymentMethod;
+import com.fooddelivery.mainservice.model.PaymentMethod;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 public class PaymentRequest {
     private double amount;
     private PaymentMethod paymentMethod;

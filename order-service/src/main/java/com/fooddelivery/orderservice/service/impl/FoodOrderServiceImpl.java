@@ -26,5 +26,3 @@ public class FoodOrderServiceImpl implements FoodOrderService {
         return orderMapper.modelToResponse(order);
     }
 }
-
-

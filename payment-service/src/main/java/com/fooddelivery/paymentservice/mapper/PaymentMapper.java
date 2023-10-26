@@ -3,13 +3,14 @@ package com.fooddelivery.paymentservice.mapper;
 import com.fooddelivery.paymentservice.dto.request.PaymentRequest;
 import com.fooddelivery.paymentservice.dto.response.PaymentResponse;
 import com.fooddelivery.paymentservice.model.Payment;
+import com.fooddelivery.paymentservice.model.PaymentStatus;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PaymentMapper {
     public Payment requestToModel(PaymentRequest paymentRequest) {
         Payment payment = new Payment();
-        payment.setPaymentStatus("Success");
+        payment.setPaymentStatus(PaymentStatus.SUCCESS);
         payment.setAmount(paymentRequest.getAmount());
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
 

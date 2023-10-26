@@ -30,7 +30,7 @@ public class FoodOrderMapper {
                             foodItemRequest.getPrice(),
                             foodItemRequest.getQuantity()
                     );
-                    foodItem.setFoodOrder(foodOrder); // Set the association to the parent FoodOrder
+                    foodItem.setFoodOrder(foodOrder);
                     return foodItem;
                 })
                 .collect(Collectors.toList());

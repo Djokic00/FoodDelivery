@@ -1,7 +1,8 @@
 package com.fooddelivery.foodservice.service.impl;
 
-import com.fooddelivery.foodservice.dto.request.FoodRequest;
-import com.fooddelivery.foodservice.dto.response.FoodResponse;
+import com.fooddelivery.foodservice.dto.request.FoodItemRequest;
+import com.fooddelivery.foodservice.dto.request.OrderRequest;
+import com.fooddelivery.foodservice.dto.response.FoodItemResponse;
 import com.fooddelivery.foodservice.exception.NotFoundException;
 import com.fooddelivery.foodservice.mapper.FoodMapper;
 import com.fooddelivery.foodservice.model.FoodItem;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -24,8 +26,8 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public FoodResponse createFoodItem(FoodRequest foodRequest) {
-        FoodItem foodItem = foodItemRepository.save(foodMapper.requestToModel(foodRequest));
+    public FoodItemResponse createFoodItem(FoodItemRequest foodItemRequest) {
+        FoodItem foodItem = foodItemRepository.save(foodMapper.requestToModel(foodItemRequest));
         return foodMapper.modelToResponse(foodItem);
     }
 
@@ -33,16 +35,33 @@ public class FoodServiceImpl implements FoodService {
         return foodItemRepository.findAll();
     }
 
-    public boolean checkFoodAvailability(Long foodItemId, int quantity) {
-        FoodItem foodItem = foodItemRepository.findById(foodItemId).orElse(null);
-        if (foodItem == null || foodItem.getQuantity() < quantity) {
+    public boolean checkFoodAvailability(OrderRequest orderRequest) {
+        List<FoodItemRequest> foodItems = orderRequest.getFoodItems();
+
+        for (FoodItemRequest foodItemRequest : foodItems) {
+            String name = foodItemRequest.getName();
+            int quantity = foodItemRequest.getQuantity();
+
+            boolean isAvailable = checkSingleFoodItemAvailability(name, quantity);
+
+            if (!isAvailable) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public boolean checkSingleFoodItemAvailability(String name, int quantity) {
+        Optional<FoodItem> foodItem = foodItemRepository.findByNameAndQuantityGreaterThanEqual(name, quantity);
+        if (foodItem.isEmpty()) {
             return false;
         }
         return true;
     }
 
     @Override
-    public FoodResponse increaseFoodInventory(Long foodItemId, int quantity) {
+    public FoodItemResponse increaseFoodInventory(Long foodItemId, int quantity) {
         FoodItem foodItem = foodItemRepository.findById(foodItemId).orElseThrow(() -> {
             log.error("Food item with given id does not exists '{}'", foodItemId);
             throw new NotFoundException("Food item with given id does not exists!");
@@ -56,7 +75,7 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public FoodResponse reduceFoodInventory(Long foodItemId, int quantity) {
+    public FoodItemResponse reduceFoodInventory(Long foodItemId, int quantity) {
         FoodItem foodItem = foodItemRepository.findById(foodItemId).orElseThrow(() -> {
             log.error("Food item with given id does not exists '{}'", foodItemId);
             throw new NotFoundException("Food item with given id does not exists!");

@@ -1,8 +1,10 @@
 package com.fooddelivery.orderservice.service;
 
-import com.fooddelivery.orderservice.dto.request.FoodOrderRequest;
-import com.fooddelivery.orderservice.dto.response.FoodOrderResponse;
-
+import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
+import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
+import com.fooddelivery.shareddtoservice.dto.response.OrderResponseList;
 public interface FoodOrderService {
-    FoodOrderResponse createOrder(FoodOrderRequest orderRequest);
+    OrderResponse createOrder(OrderRequest orderRequest);
+    OrderResponseList getActiveOrders();
+    void cancelOrder(Long orderId);
 }

@@ -1,16 +1,17 @@
 package com.fooddelivery.foodservice.service.impl;
 
-import com.fooddelivery.foodservice.dto.request.FoodItemRequest;
-import com.fooddelivery.foodservice.dto.request.OrderRequest;
-import com.fooddelivery.foodservice.dto.response.FoodItemResponse;
 import com.fooddelivery.foodservice.exception.NotFoundException;
 import com.fooddelivery.foodservice.mapper.FoodMapper;
 import com.fooddelivery.foodservice.model.FoodItem;
 import com.fooddelivery.foodservice.repository.FoodItemRepository;
 import com.fooddelivery.foodservice.service.FoodService;
+import com.fooddelivery.shareddtoservice.dto.request.FoodItemRequest;
+import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
+import com.fooddelivery.shareddtoservice.dto.response.FoodItemResponse;
+import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,15 +43,12 @@ public class FoodServiceImpl implements FoodService {
             String name = foodItemRequest.getName();
             int quantity = foodItemRequest.getQuantity();
 
-            boolean isAvailable = checkSingleFoodItemAvailability(name, quantity);
-
-            if (!isAvailable) {
+            if (!checkSingleFoodItemAvailability(name, quantity)) {
                 return false;
             }
         }
         return true;
     }
-
 
     public boolean checkSingleFoodItemAvailability(String name, int quantity) {
         Optional<FoodItem> foodItem = foodItemRepository.findByNameAndQuantityGreaterThanEqual(name, quantity);
@@ -75,18 +73,25 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public FoodItemResponse reduceFoodInventory(Long foodItemId, int quantity) {
-        FoodItem foodItem = foodItemRepository.findById(foodItemId).orElseThrow(() -> {
-            log.error("Food item with given id does not exists '{}'", foodItemId);
-            throw new NotFoundException("Food item with given id does not exists!");
-        });
-        if (foodItem != null) {
-            int currentQuantity = foodItem.getQuantity();
-            if (currentQuantity >= quantity) {
-                foodItem.setQuantity(currentQuantity - quantity);
-                foodItemRepository.save(foodItem);
+    public List<FoodItemResponse> reduceFoodInventory(OrderResponse foodOrderResponse) {
+        List<FoodItemResponse> updatedFoodItems = new ArrayList<>();
+
+        for (FoodItemResponse foodItemResponse : foodOrderResponse.getFoodItems()) {
+            FoodItem foodItem = foodItemRepository.findByName(foodItemResponse.getName()).orElseThrow(() -> {
+                log.error("Food item with given id does not exist '{}'", foodItemResponse.getId());
+                throw new NotFoundException("Food item with given id does not exist!");
+            });
+
+            if (foodItem != null) {
+                int currentQuantity = foodItem.getQuantity();
+                if (currentQuantity >= foodItemResponse.getQuantity()) {
+                    foodItem.setQuantity(currentQuantity - foodItemResponse.getQuantity());
+                    foodItemRepository.save(foodItem);
+                    updatedFoodItems.add(foodMapper.modelToResponse(foodItem));
+                }
             }
         }
-        return foodMapper.modelToResponse(foodItem);
+
+        return updatedFoodItems;
     }
 }

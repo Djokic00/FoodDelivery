@@ -1,8 +1,8 @@
 package com.fooddelivery.foodservice.mapper;
 
-import com.fooddelivery.foodservice.dto.request.FoodItemRequest;
-import com.fooddelivery.foodservice.dto.response.FoodItemResponse;
 import com.fooddelivery.foodservice.model.FoodItem;
+import com.fooddelivery.shareddtoservice.dto.request.FoodItemRequest;
+import com.fooddelivery.shareddtoservice.dto.response.FoodItemResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,7 +10,7 @@ public class FoodMapper {
     public FoodItem requestToModel(FoodItemRequest foodItemRequest) {
         FoodItem item = new FoodItem();
         item.setName(foodItemRequest.getName());
-        item.setPrice(foodItemRequest.getPrice());
+//        item.setPrice(foodItemRequest.getPrice());
         item.setQuantity(foodItemRequest.getQuantity());
 
         return item;

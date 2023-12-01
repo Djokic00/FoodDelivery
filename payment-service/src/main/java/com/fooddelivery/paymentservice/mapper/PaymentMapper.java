@@ -1,9 +1,9 @@
 package com.fooddelivery.paymentservice.mapper;
 
-import com.fooddelivery.paymentservice.dto.request.PaymentRequest;
-import com.fooddelivery.paymentservice.dto.response.PaymentResponse;
 import com.fooddelivery.paymentservice.model.Payment;
-import com.fooddelivery.paymentservice.model.PaymentStatus;
+import com.fooddelivery.shareddtoservice.dto.request.PaymentRequest;
+import com.fooddelivery.shareddtoservice.dto.response.PaymentResponse;
+import com.fooddelivery.shareddtoservice.model.PaymentStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,7 +19,7 @@ public class PaymentMapper {
 
     public PaymentResponse modelToResponse(Payment savedPayment) {
         PaymentResponse paymentResponse = new PaymentResponse();
-        paymentResponse.setPaymentId(savedPayment.getPaymentId());
+        paymentResponse.setOrderId(savedPayment.getOrderId());
         paymentResponse.setPaymentStatus(savedPayment.getPaymentStatus());
         paymentResponse.setAmount(savedPayment.getAmount());
         paymentResponse.setPaymentMethod(savedPayment.getPaymentMethod());

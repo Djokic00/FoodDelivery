@@ -6,11 +6,13 @@ import lombok.Setter;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "food_item")
+@Table(name = "food_items")
 public class FoodItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,14 +21,13 @@ public class FoodItem {
     private String name;
     private double price;
     private int quantity;
+    private boolean deleted;
 
-    @ManyToOne
-    @JoinColumn(name = "food_order_id")
-    private FoodOrder foodOrder;
+    @ManyToMany(mappedBy = "foodItems")
+    private List<FoodOrder> foodOrders;
 
-    public FoodItem(String name, double price, int quantity) {
+    public FoodItem(String name, int quantity) {
         this.name = name;
-        this.price = price;
         this.quantity = quantity;
     }
 }

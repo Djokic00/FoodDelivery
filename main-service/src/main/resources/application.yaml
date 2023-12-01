@@ -18,7 +18,7 @@ server:
     context-path: "/api"
 
 
-food-service-url: "http://localhost:8081/api/food"
-order-service-url: "http://localhost:8082/api/orders"
+#food-service-url: "http://localhost:8081/api/food"
+order-service-url: "http://localhost:8082/api/"
 payment-service-url: "http://localhost:8083/api/payments"
-#saga-service-url: "http://localhost:8084/api/saga"
+saga-service-url: "http://localhost:8084/api/saga"

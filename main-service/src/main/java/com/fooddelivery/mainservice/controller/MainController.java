@@ -1,8 +1,8 @@
 package com.fooddelivery.mainservice.controller;
 
-import com.fooddelivery.mainservice.dto.request.OrderRequest;
-import com.fooddelivery.mainservice.dto.response.OrderResponse;
 import com.fooddelivery.mainservice.service.MainService;
+import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
+import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

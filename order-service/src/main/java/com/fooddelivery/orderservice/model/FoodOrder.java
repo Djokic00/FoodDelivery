@@ -1,5 +1,6 @@
 package com.fooddelivery.orderservice.model;
 
+import com.fooddelivery.shareddtoservice.model.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
@@ -16,13 +17,22 @@ public class FoodOrder {
 
     private String customerName;
 
-    @OneToMany(mappedBy = "foodOrder", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "food_order_items",
+            joinColumns = { @JoinColumn(name = "food_order_id") },
+            inverseJoinColumns = { @JoinColumn(name = "food_item_id") }
+    )
     private List<FoodItem> foodItems;
 
     private double totalPrice;
 
-    private String status;
-}
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status")
+    private OrderStatus status;
 
+    @Column(name = "deleted")
+    private boolean deleted;
+}
 
 

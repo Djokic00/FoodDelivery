@@ -9,13 +9,14 @@ spring:
       enabled: always
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     url: "jdbc:postgresql://localhost:5432/food_db"
     username: "aleksa"
     password: "aleksa"
     driver-class-name: org.postgresql.Driver
+
 server:
   port: 8081
   servlet:

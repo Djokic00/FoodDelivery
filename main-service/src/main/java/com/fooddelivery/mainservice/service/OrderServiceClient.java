@@ -1,12 +1,18 @@
 package com.fooddelivery.mainservice.service;
 
-import com.fooddelivery.mainservice.dto.request.OrderRequest;
-import com.fooddelivery.mainservice.dto.response.OrderResponse;
+import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
+import com.fooddelivery.shareddtoservice.dto.response.FoodItemResponse;
+import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @Service
 public class OrderServiceClient {
@@ -17,10 +23,31 @@ public class OrderServiceClient {
         this.orderServiceUrl = orderServiceUrl;
     }
 
+    public ResponseEntity<Boolean> checkFoodAvailability(OrderRequest orderRequest) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = orderServiceUrl + "/food/check-availability";
+        ResponseEntity<Boolean> response = restTemplate.postForEntity(url, orderRequest, Boolean.class);
+        return response;
+    }
+
     public ResponseEntity<OrderResponse> createOrder(OrderRequest orderRequest) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = orderServiceUrl + "/create";
+        String url = orderServiceUrl + "/orders/create";
         ResponseEntity<OrderResponse> response = restTemplate.postForEntity(url, orderRequest, OrderResponse.class);
+        return response;
+    }
+
+    public ResponseEntity<List<FoodItemResponse>> reduceFoodInventory(OrderRequest orderRequest) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = orderServiceUrl + "/food/reduce-inventory";
+        HttpEntity<OrderRequest> requestEntity = new HttpEntity<>(orderRequest);
+
+        ResponseEntity<List<FoodItemResponse>> response = restTemplate.exchange(
+                url,
+                HttpMethod.PUT,
+                requestEntity,
+                new ParameterizedTypeReference<>() {}
+        );
         return response;
     }
 }

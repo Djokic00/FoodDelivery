@@ -1,8 +1,8 @@
 package com.fooddelivery.orderservice.controller;
-
-import com.fooddelivery.orderservice.dto.request.FoodOrderRequest;
-import com.fooddelivery.orderservice.dto.response.FoodOrderResponse;
 import com.fooddelivery.orderservice.service.FoodOrderService;
+import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
+import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
+import com.fooddelivery.shareddtoservice.dto.response.OrderResponseList;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +19,13 @@ public class FoodOrderController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<FoodOrderResponse> createOrder(@RequestBody FoodOrderRequest orderRequest) {
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest) {
         return ResponseEntity.ok(orderService.createOrder(orderRequest));
+    }
+
+    @GetMapping(path = "/getOrders")
+    public ResponseEntity<OrderResponseList> getActiveOrders() {
+        return ResponseEntity.ok(orderService.getActiveOrders());
     }
 }
 

@@ -1,62 +1,74 @@
 package com.fooddelivery.mainservice.service;
-
-
-import com.fooddelivery.mainservice.dto.request.OrderRequest;
-import com.fooddelivery.mainservice.dto.request.PaymentRequest;
-import com.fooddelivery.mainservice.dto.response.OrderResponse;
-import com.fooddelivery.mainservice.dto.response.PaymentResponse;
-import com.fooddelivery.mainservice.model.PaymentMethod;
-import com.fooddelivery.mainservice.model.PaymentStatus;
+import com.fooddelivery.mainservice.exception.NotFoundException;
+import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
+import com.fooddelivery.shareddtoservice.dto.request.PaymentRequest;
+import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
+import com.fooddelivery.shareddtoservice.dto.response.PaymentResponse;
+import com.fooddelivery.shareddtoservice.model.OrderStatus;
+import com.fooddelivery.shareddtoservice.model.PaymentMethod;
+import com.fooddelivery.shareddtoservice.model.PaymentStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class MainService {
     private final OrderServiceClient orderServiceClient;
-    private final FoodServiceClient foodServiceClient;
     private final PaymentServiceClient paymentServiceClient;
-//    private final SagaServiceClient sagaServiceClient;
+    private final SagaServiceClient sagaServiceClient;
 
     @Autowired
     public MainService(
             OrderServiceClient orderServiceClient,
-            FoodServiceClient foodServiceClient,
-            PaymentServiceClient paymentServiceClient
-//            SagaServiceClient sagaServiceClient
-    ) {
+            PaymentServiceClient paymentServiceClient,
+            SagaServiceClient sagaServiceClient) {
         this.orderServiceClient = orderServiceClient;
-        this.foodServiceClient = foodServiceClient;
         this.paymentServiceClient = paymentServiceClient;
-//        this.sagaServiceClient = sagaServiceClient;
+        this.sagaServiceClient = sagaServiceClient;
     }
 
     @Transactional
     public OrderResponse createOrder(OrderRequest orderRequest) {
         // Step 1: Check if food is available
-        ResponseEntity<Boolean> isFoodAvailable = foodServiceClient.checkFoodAvailability(orderRequest);
+        ResponseEntity<Boolean> isFoodAvailable = orderServiceClient.checkFoodAvailability(orderRequest);
         if (Boolean.FALSE.equals(isFoodAvailable.getBody())) {
-            OrderResponse orderResponse = new OrderResponse();
-            orderResponse.setStatus("Food not available");
-            return orderResponse;
+            throw new NotFoundException("Food is not available");
         }
 
         // Step 2: Create order
         ResponseEntity<OrderResponse> orderResponse = orderServiceClient.createOrder(orderRequest);
 
         // Step 3: Process payment and update the saga
-        PaymentRequest paymentRequest = new PaymentRequest();
-        paymentRequest.setAmount(orderRequest.getTotalPrice());
-        paymentRequest.setPaymentMethod(PaymentMethod.VISA_CARD);
-//        paymentRequest.setPaymentMethod(PaymentMethod.PAYPAL);
+        if (orderResponse.getBody() != null) {
+            OrderResponse response = orderResponse.getBody();
+            PaymentRequest paymentRequest = new PaymentRequest();
+            paymentRequest.setOrderId(response.getId());
+            paymentRequest.setAmount(response.getTotalPrice());
+            paymentRequest.setPaymentMethod(PaymentMethod.VISA_CARD);
+//            paymentRequest.setPaymentMethod(PaymentMethod.PAYPAL);
 
-        ResponseEntity<PaymentResponse> paymentStatus = paymentServiceClient.processPayment(paymentRequest);
-        PaymentResponse paymentResponse = paymentStatus.getBody();
-        if (paymentResponse == null || paymentResponse.getPaymentStatus() == PaymentStatus.FAILED) {
-            //sagaServiceClient.compensatePaymentService(orderResponse.getOrderId());
-            return orderResponse.getBody();
+            ResponseEntity<PaymentResponse> paymentResponseEntity = paymentServiceClient.processPayment(paymentRequest);
+            PaymentResponse paymentResponse = paymentResponseEntity.getBody();
+            if (paymentResponse != null && paymentResponse.getPaymentStatus() == PaymentStatus.FAIL) {
+                sagaServiceClient.initiateCompensation(paymentResponse.getOrderId());
+                orderResponse.getBody().setStatus(OrderStatus.FAILED_PAYMENT_NOT_SUCCESSFUL);
+                return orderResponse.getBody();
+            }
+            else if (paymentResponse != null && paymentResponse.getPaymentStatus() == PaymentStatus.SUCCESS) {
+//                orderServiceClient.reduceFoodInventory(orderRequest);
+                orderResponse.getBody().setStatus(OrderStatus.SUCCESS);
+            }
         }
+
+//        if (orderResponse.getStatusCode().is4xxClientError()) {
+//            // Handle client errors (e.g., bad request, unauthorized, not found)
+//            // Extract error information from the response, if available
+//        } else if (orderResponse.getStatusCode().is5xxServerError()) {
+//
+//        }
 
         return orderResponse.getBody();
     }

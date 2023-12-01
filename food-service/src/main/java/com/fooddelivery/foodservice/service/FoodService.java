@@ -1,9 +1,10 @@
 package com.fooddelivery.foodservice.service;
 
-import com.fooddelivery.foodservice.dto.request.FoodItemRequest;
-import com.fooddelivery.foodservice.dto.request.OrderRequest;
-import com.fooddelivery.foodservice.dto.response.FoodItemResponse;
 import com.fooddelivery.foodservice.model.FoodItem;
+import com.fooddelivery.shareddtoservice.dto.request.FoodItemRequest;
+import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
+import com.fooddelivery.shareddtoservice.dto.response.FoodItemResponse;
+import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
 
 import java.util.List;
 
@@ -12,6 +13,6 @@ public interface FoodService {
     List<FoodItem> getAllFoodItems();
     boolean checkFoodAvailability(OrderRequest orderRequest);
     FoodItemResponse increaseFoodInventory(Long foodItemId, int quantity);
-    FoodItemResponse reduceFoodInventory(Long foodItemId, int quantity);
+    List<FoodItemResponse> reduceFoodInventory(OrderResponse orderResponse);
 
 }

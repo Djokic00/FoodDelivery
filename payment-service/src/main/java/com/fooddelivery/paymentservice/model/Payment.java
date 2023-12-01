@@ -1,5 +1,7 @@
 package com.fooddelivery.paymentservice.model;
 
+import com.fooddelivery.shareddtoservice.model.PaymentMethod;
+import com.fooddelivery.shareddtoservice.model.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +13,8 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
+
+    private Long orderId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")

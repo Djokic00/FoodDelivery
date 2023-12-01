@@ -1,9 +1,7 @@
 package com.fooddelivery.mainservice.service;
 
-import com.fooddelivery.mainservice.dto.request.OrderRequest;
-import com.fooddelivery.mainservice.dto.request.PaymentRequest;
-import com.fooddelivery.mainservice.dto.response.OrderResponse;
-import com.fooddelivery.mainservice.dto.response.PaymentResponse;
+import com.fooddelivery.shareddtoservice.dto.request.PaymentRequest;
+import com.fooddelivery.shareddtoservice.dto.response.PaymentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;

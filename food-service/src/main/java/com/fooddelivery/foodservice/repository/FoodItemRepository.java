@@ -8,6 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface FoodItemRepository extends JpaRepository<FoodItem, Long> {
+    Optional<FoodItem> findByName(String name);
     Optional<FoodItem> findByNameAndQuantityGreaterThanEqual(String name, int quantity);
 }
 

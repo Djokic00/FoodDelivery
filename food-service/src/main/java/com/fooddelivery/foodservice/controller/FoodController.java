@@ -1,10 +1,11 @@
 package com.fooddelivery.foodservice.controller;
 
-import com.fooddelivery.foodservice.dto.request.FoodItemRequest;
-import com.fooddelivery.foodservice.dto.request.OrderRequest;
-import com.fooddelivery.foodservice.dto.response.FoodItemResponse;
 import com.fooddelivery.foodservice.model.FoodItem;
 import com.fooddelivery.foodservice.service.FoodService;
+import com.fooddelivery.shareddtoservice.dto.request.FoodItemRequest;
+import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
+import com.fooddelivery.shareddtoservice.dto.response.FoodItemResponse;
+import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -39,7 +40,7 @@ public class FoodController {
     }
 
     @PutMapping("/reduce-inventory")
-    public ResponseEntity<FoodItemResponse> reduceFoodInventory(@RequestParam Long foodItemId, @RequestParam int quantity) {
-        return ResponseEntity.ok(foodService.reduceFoodInventory(foodItemId, quantity));
+    public ResponseEntity<List<FoodItemResponse>> reduceFoodInventory(@RequestBody OrderResponse foodOrderResponse) {
+        return ResponseEntity.ok(foodService.reduceFoodInventory(foodOrderResponse));
     }
 }

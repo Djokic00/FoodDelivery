@@ -58,7 +58,6 @@ public class MainService {
                 return orderResponse.getBody();
             }
             else if (paymentResponse != null && paymentResponse.getPaymentStatus() == PaymentStatus.SUCCESS) {
-//                orderServiceClient.reduceFoodInventory(orderRequest);
                 orderResponse.getBody().setStatus(OrderStatus.SUCCESS);
             }
         }

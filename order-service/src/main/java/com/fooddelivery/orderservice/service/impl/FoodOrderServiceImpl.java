@@ -6,9 +6,11 @@ import com.fooddelivery.orderservice.model.FoodItem;
 import com.fooddelivery.orderservice.model.FoodOrder;
 import com.fooddelivery.orderservice.repository.FoodItemRepository;
 import com.fooddelivery.orderservice.repository.FoodOrderRepository;
+import com.fooddelivery.orderservice.service.FoodItemService;
 import com.fooddelivery.orderservice.service.FoodOrderService;
 import com.fooddelivery.shareddtoservice.dto.request.FoodItemRequest;
 import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
+import com.fooddelivery.shareddtoservice.dto.response.FoodItemResponse;
 import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
 import com.fooddelivery.shareddtoservice.dto.response.OrderResponseList;
 import com.fooddelivery.shareddtoservice.model.OrderStatus;
@@ -29,12 +31,14 @@ import java.util.stream.Collectors;
 public class FoodOrderServiceImpl implements FoodOrderService {
     private final FoodOrderRepository orderRepository;
     private final FoodOrderMapper orderMapper;
+    private final FoodItemService foodItemService;
 
     private final FoodItemRepository foodItemRepository;
 
-    public FoodOrderServiceImpl(FoodOrderRepository orderRepository, FoodOrderMapper orderMapper, FoodItemRepository foodItemRepository) {
+    public FoodOrderServiceImpl(FoodOrderRepository orderRepository, FoodOrderMapper orderMapper, FoodItemService foodItemService, FoodItemRepository foodItemRepository) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
+        this.foodItemService = foodItemService;
         this.foodItemRepository = foodItemRepository;
     }
 
@@ -49,10 +53,9 @@ public class FoodOrderServiceImpl implements FoodOrderService {
                 .collect(Collectors.toMap(FoodItem::getName, Function.identity()));
 
         double totalPrice = calculateTotalPrice(orderRequest);
-        System.out.println("Order REQUEST " + orderRequest.getFoodItems().get(0).getQuantity());
         FoodOrder order = orderRepository.save(orderMapper.requestToModel(orderRequest, totalPrice, existingFoodItemMap));
-        System.out.println("Order " + order.getFoodItems().get(0).getQuantity());
         OrderResponse orderResponse = orderMapper.modelToResponse(order);
+        foodItemService.reduceFoodInventory(orderResponse);
         return orderResponse;
     }
 
@@ -73,10 +76,26 @@ public class FoodOrderServiceImpl implements FoodOrderService {
         return totalPrice;
     }
 
-
     @Override
     public OrderResponseList getActiveOrders() {
-        return orderRepository.findByDeletedFalse();
+        List<OrderResponse> orders = orderRepository.findBasicOrderDetails();
+
+        for (OrderResponse order : orders) {
+            List<FoodItemResponse> orderItems = orderRepository.findOrderItemsByOrderId(order.getId());
+
+            for (FoodItemResponse orderItem : orderItems) {
+                Optional<FoodItemResponse> foodItemDetails = foodItemRepository.findFoodItemDetailsById(orderItem.getId());
+                foodItemDetails.ifPresent(foodItemResponse -> {
+                    orderItem.setName(foodItemResponse.getName());
+                    orderItem.setPrice(foodItemResponse.getPrice());
+                });
+            }
+
+            order.setFoodItems(orderItems);
+        }
+
+
+        return new OrderResponseList(orders);
     }
 
     @KafkaListener(topics = "order-cancellation", groupId = "saga-group")

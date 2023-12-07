@@ -78,21 +78,17 @@ public class FoodItemServiceImpl implements FoodItemService {
         List<FoodItemResponse> updatedFoodItems = new ArrayList<>();
 
         for (FoodItemResponse foodItemResponse : foodOrderResponse.getFoodItems()) {
-            FoodItem foodItem = foodItemRepository.findByName(foodItemResponse.getName()).orElseThrow(() -> {
-                log.error("Food item with given id does not exist '{}'", foodItemResponse.getId());
-                throw new NotFoundException("Food item with given id does not exist!");
-            });
-
-//            if (foodItem != null) {
-//                int currentQuantity = foodItem.getQuantity();
-//                if (currentQuantity >= foodItemResponse.getQuantity()) {
-//                    foodItem.setQuantity(currentQuantity - foodItemResponse.getQuantity());
-//                    foodItemRepository.save(foodItem);
-//                    updatedFoodItems.add(foodMapper.modelToResponse(foodItem));
-//                }
-//            }
+            Optional<FoodItem> optionalFoodItem = foodItemRepository.findByName(foodItemResponse.getName());
+            if (optionalFoodItem.isPresent()) {
+                FoodItem foodItem = optionalFoodItem.get();
+                int currentQuantity = foodItem.getQuantity();
+                if (currentQuantity >= foodItemResponse.getQuantity()) {
+                    foodItem.setQuantity(currentQuantity - foodItemResponse.getQuantity());
+                    foodItemRepository.save(foodItem);
+                    updatedFoodItems.add(foodMapper.modelToResponse(foodItem));
+                }
+            }
         }
-
         return updatedFoodItems;
     }
 }

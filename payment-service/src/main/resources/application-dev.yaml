@@ -1,0 +1,25 @@
+logging:
+  level:
+    root: INFO
+spring:
+  application:
+    name: "Payment Service"
+  output:
+    ansi:
+      enabled: always
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/payment_db"
+    username: "aleksa"
+    password: "aleksa"
+    driver-class-name: org.postgresql.Driver
+
+server:
+  port: 8082
+  servlet:
+    context-path: "/api"
+
+

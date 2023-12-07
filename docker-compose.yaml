@@ -1,0 +1,70 @@
+version: '3'
+
+networks:
+  my-network:
+    driver: bridge
+
+services:
+  main-service:
+    image: main-service:1.0
+    ports:
+      - "8080:8080"
+    networks:
+      - my-network
+
+#  order-service:
+#    image: order-service:2.0
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      - order_db
+#      - kafka-service
+#    networks:
+#      - my-network
+
+  payment-service:
+    image: payment-service:2.0
+    ports:
+      - "8082:8082"
+    depends_on:
+      - payment_db
+    networks:
+      - my-network
+
+  saga-service:
+    image: saga-service:2.0
+    ports:
+      - "8083:8083"
+    networks:
+      - my-network
+
+  kafka-service:
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - "9092:9092"
+    networks:
+      - my-network
+
+  order_db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: order_db
+      POSTGRES_USER: aleksa
+      POSTGRES_PASSWORD: aleksa
+    ports:
+      - "5432:5432"
+    networks:
+      - my-network
+
+  payment_db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: aleksa
+      POSTGRES_PASSWORD: aleksa
+    ports:
+      - "5433:5432"
+    networks:
+      - my-network
+
+

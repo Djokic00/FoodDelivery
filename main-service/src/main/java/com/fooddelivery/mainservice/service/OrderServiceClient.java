@@ -36,19 +36,5 @@ public class OrderServiceClient {
         ResponseEntity<OrderResponse> response = restTemplate.postForEntity(url, orderRequest, OrderResponse.class);
         return response;
     }
-
-    public ResponseEntity<List<FoodItemResponse>> reduceFoodInventory(OrderRequest orderRequest) {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = orderServiceUrl + "/food/reduce-inventory";
-        HttpEntity<OrderRequest> requestEntity = new HttpEntity<>(orderRequest);
-
-        ResponseEntity<List<FoodItemResponse>> response = restTemplate.exchange(
-                url,
-                HttpMethod.PUT,
-                requestEntity,
-                new ParameterizedTypeReference<>() {}
-        );
-        return response;
-    }
 }
 

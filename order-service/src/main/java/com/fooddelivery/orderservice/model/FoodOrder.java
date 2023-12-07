@@ -16,16 +16,10 @@ public class FoodOrder {
     private Long id;
 
     private String customerName;
-
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "food_order_items",
-            joinColumns = { @JoinColumn(name = "food_order_id") },
-            inverseJoinColumns = { @JoinColumn(name = "food_item_id") }
-    )
-    private List<FoodItem> foodItems;
-
     private double totalPrice;
+
+    @OneToMany(mappedBy = "foodOrder", cascade = CascadeType.ALL)
+    private List<FoodOrderItem> foodOrderItems;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")

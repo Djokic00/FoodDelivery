@@ -4,15 +4,12 @@ import com.fooddelivery.paymentservice.mapper.PaymentMapper;
 import com.fooddelivery.paymentservice.model.Payment;
 import com.fooddelivery.paymentservice.repository.PaymentRepository;
 import com.fooddelivery.paymentservice.service.PaymentService;
-import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
 import com.fooddelivery.shareddtoservice.dto.request.PaymentRequest;
 import com.fooddelivery.shareddtoservice.dto.response.PaymentResponse;
 import com.fooddelivery.shareddtoservice.model.PaymentMethod;
 import com.fooddelivery.shareddtoservice.model.PaymentStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaHandler;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -41,7 +38,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private boolean isPaymentSuccessful() {
-        // Simulate payment success with a 50% chance
+        // Simulate payment success with a 90% chance
         double successProbability = 0.90;
         return Math.random() < successProbability;
     }

@@ -1,7 +1,6 @@
 package com.fooddelivery.shareddtoservice.dto.response;
 
 import com.fooddelivery.shareddtoservice.model.OrderStatus;
-import com.fooddelivery.shareddtoservice.dto.request.FoodItemRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,4 +18,11 @@ public class OrderResponse {
     private double totalPrice;
     private List<FoodItemResponse> foodItems;
     private OrderStatus status;
+
+    public OrderResponse(Long id, String customerName, double totalPrice, OrderStatus status) {
+        this.id = id;
+        this.customerName = customerName;
+        this.totalPrice = totalPrice;
+        this.status = status;
+    }
 }

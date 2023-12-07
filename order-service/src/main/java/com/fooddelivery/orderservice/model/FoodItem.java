@@ -3,7 +3,6 @@ package com.fooddelivery.orderservice.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "food_items")
+@Table(name = "food_item")
 public class FoodItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +22,7 @@ public class FoodItem {
     private int quantity;
     private boolean deleted;
 
-    @ManyToMany(mappedBy = "foodItems")
-    private List<FoodOrder> foodOrders;
-
-    public FoodItem(String name, int quantity) {
-        this.name = name;
-        this.quantity = quantity;
-    }
+    @OneToMany(mappedBy = "foodItem", cascade = CascadeType.ALL)
+    private List<FoodOrderItem> foodOrderItems;
 }
 

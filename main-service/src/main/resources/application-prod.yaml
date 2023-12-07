@@ -1,0 +1,22 @@
+logging:
+  level:
+    root: INFO
+spring:
+  application:
+    name: "Main Service"
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+server:
+  port: 8080
+  servlet:
+    context-path: "/api"
+
+order-service-url: "http://order-service:8081/api/"
+payment-service-url: "http://payment-service:8082/api/payments"
+saga-service-url: "http://saga-service:8083/api/saga"

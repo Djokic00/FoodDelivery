@@ -3,22 +3,23 @@ logging:
     root: INFO
 spring:
   application:
-    name: "Food Service"
+    name: "Payment Service"
   output:
     ansi:
       enabled: always
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
-    url: "jdbc:postgresql://localhost:5432/food_db"
+    url: "jdbc:postgresql://payment_db:5432/payment_db"
     username: "aleksa"
     password: "aleksa"
     driver-class-name: org.postgresql.Driver
 
 server:
-  port: 8081
+  port: 8082
   servlet:
     context-path: "/api"
+
 

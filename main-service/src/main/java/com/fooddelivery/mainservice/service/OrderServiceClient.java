@@ -5,6 +5,8 @@ import com.fooddelivery.shareddtoservice.dto.response.FoodItemResponse;
 import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -15,6 +17,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Service
+@Profile({"dev", "prod"})
+@PropertySource("classpath:application-${spring.profiles.active}.yaml")
 public class OrderServiceClient {
     private final String orderServiceUrl;
 

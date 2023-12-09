@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@Profile({"dev", "prod"})
-@PropertySource("classpath:application-${spring.profiles.active}.yaml")
 public class PaymentServiceClient {
     private final String paymentServiceUrl;
 

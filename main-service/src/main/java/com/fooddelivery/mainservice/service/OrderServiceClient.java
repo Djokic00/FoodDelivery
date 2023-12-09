@@ -17,8 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Service
-@Profile({"dev", "prod"})
-@PropertySource("classpath:application-${spring.profiles.active}.yaml")
 public class OrderServiceClient {
     private final String orderServiceUrl;
 

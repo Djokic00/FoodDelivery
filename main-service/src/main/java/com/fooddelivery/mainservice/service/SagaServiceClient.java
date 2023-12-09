@@ -12,8 +12,6 @@ import java.util.Collections;
 import java.util.Map;
 
 @Service
-@Profile({"dev", "prod"})
-@PropertySource("classpath:application-${spring.profiles.active}.yaml")
 public class SagaServiceClient {
     private final String sagaServiceUrl;
 

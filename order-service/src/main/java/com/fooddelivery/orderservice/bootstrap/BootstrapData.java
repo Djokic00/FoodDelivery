@@ -17,7 +17,7 @@ public class BootstrapData implements CommandLineRunner {
     public void run(String... args) {
         FoodItem apple = new FoodItem();
         apple.setName("apple");
-        apple.setQuantity(200);
+        apple.setQuantity(100);
         apple.setPrice(1.0);
         apple.setDeleted(false);
 
@@ -29,13 +29,13 @@ public class BootstrapData implements CommandLineRunner {
 
         FoodItem banana = new FoodItem();
         banana.setName("banana");
-        banana.setQuantity(150);
+        banana.setQuantity(100);
         banana.setPrice(1.5);
         banana.setDeleted(false);
 
         FoodItem pear = new FoodItem();
         pear.setName("pear");
-        pear.setQuantity(30);
+        pear.setQuantity(100);
         pear.setPrice(1.5);
         pear.setDeleted(false);
 

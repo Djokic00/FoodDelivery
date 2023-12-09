@@ -4,16 +4,19 @@ import com.fooddelivery.orderservice.exception.NotFoundException;
 import com.fooddelivery.orderservice.mapper.FoodOrderMapper;
 import com.fooddelivery.orderservice.model.FoodItem;
 import com.fooddelivery.orderservice.model.FoodOrder;
+import com.fooddelivery.orderservice.model.FoodOrderItem;
 import com.fooddelivery.orderservice.repository.FoodItemRepository;
 import com.fooddelivery.orderservice.repository.FoodOrderRepository;
 import com.fooddelivery.orderservice.service.FoodItemService;
 import com.fooddelivery.orderservice.service.FoodOrderService;
 import com.fooddelivery.shareddtoservice.dto.request.FoodItemRequest;
 import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
+import com.fooddelivery.shareddtoservice.dto.response.FoodItemQuantityResponse;
 import com.fooddelivery.shareddtoservice.dto.response.FoodItemResponse;
 import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
 import com.fooddelivery.shareddtoservice.dto.response.OrderResponseList;
 import com.fooddelivery.shareddtoservice.model.OrderStatus;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -100,7 +103,7 @@ public class FoodOrderServiceImpl implements FoodOrderService {
 
     @KafkaListener(topics = "order-cancellation", groupId = "saga-group")
     @KafkaHandler
-    public void processOrderCancellationEvent(@Payload Map<String, Object> messagePayload) {
+    public void processOrderCancellationEvent(@org.jetbrains.annotations.NotNull @Payload Map<String, Object> messagePayload) {
         try {
             Long orderId = Long.parseLong((String) messagePayload.get("orderId"));
             cancelOrder(orderId);
@@ -113,8 +116,12 @@ public class FoodOrderServiceImpl implements FoodOrderService {
     public void cancelOrder(Long orderId) {
         FoodOrder order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Order with given ID is not found"));
         order.setDeleted(true);
-        order.setStatus(OrderStatus.FAILED_PAYMENT_NOT_SUCCESSFUL);
+        order.setStatus(OrderStatus.CANCELED_PAYMENT_NOT_SUCCESSFUL); // Assuming you have a CANCELED status
+        List<FoodItemQuantityResponse> foodItems = foodItemRepository.findFoodItemIdsAndQuantitiesByOrderId(orderId);
+        for (FoodItemQuantityResponse foodItem : foodItems) {
+            foodItemService.increaseFoodInventory(foodItem.getFoodItemId(), foodItem.getQuantity());
+        }
         orderRepository.save(order);
-        System.out.println("Cancelling order for order ID: " + orderId);
+        System.out.println("Canceled order with order ID: " + orderId);
     }
 }

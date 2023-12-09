@@ -1,6 +1,7 @@
 package com.fooddelivery.orderservice.model;
 
 import com.fooddelivery.shareddtoservice.model.OrderStatus;
+import com.fooddelivery.shareddtoservice.model.PaymentMethod;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
@@ -17,6 +18,10 @@ public class FoodOrder {
 
     private String customerName;
     private double totalPrice;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status")
+    private PaymentMethod paymentMethod;
 
     @OneToMany(mappedBy = "foodOrder", cascade = CascadeType.ALL)
     private List<FoodOrderItem> foodOrderItems;

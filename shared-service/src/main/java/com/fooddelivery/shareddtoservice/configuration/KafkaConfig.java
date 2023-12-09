@@ -18,6 +18,7 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, Map<String, Object>> producerFactory() {
         Map<String, Object> configs = new HashMap<>();
+//        configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka-service:9092");
         configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
@@ -30,3 +31,4 @@ public class KafkaConfig {
         return new KafkaTemplate<>(producerFactory());
     }
 }
+

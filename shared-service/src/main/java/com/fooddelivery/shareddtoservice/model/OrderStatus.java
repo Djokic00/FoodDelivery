@@ -3,8 +3,7 @@ package com.fooddelivery.shareddtoservice.model;
 public enum OrderStatus {
     SUCCESS("SUCCESS"),
     PENDING("PENDING"),
-    FAILED_FOOD_NOT_AVAILABLE("FOOD_NOT_AVAILABLE"),
-    FAILED_PAYMENT_NOT_SUCCESSFUL("PAYMENT_NOT_SUCCESSFUL");
+    CANCELED_PAYMENT_NOT_SUCCESSFUL("PAYMENT_NOT_SUCCESSFUL");
 
     private final String status;
 

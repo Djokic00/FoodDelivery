@@ -21,6 +21,7 @@ public class FoodOrderMapper {
         FoodOrder order = new FoodOrder();
         order.setCustomerName(orderRequest.getCustomerName());
         order.setTotalPrice(totalPrice);
+        order.setPaymentMethod(orderRequest.getPaymentMethod());
         order.setStatus(OrderStatus.SUCCESS);
 
         List<FoodOrderItem> orderItems = mapFoodItemRequests(orderRequest.getFoodItems(), order, existingFoodItemMap);
@@ -51,6 +52,7 @@ public class FoodOrderMapper {
         response.setId(order.getId());
         response.setCustomerName(order.getCustomerName());
         response.setTotalPrice(order.getTotalPrice());
+        response.setPaymentMethod(order.getPaymentMethod());
         response.setFoodItems(mapFoodOrderItemsToFoodItemResponses(order.getFoodOrderItems()));
         response.setStatus(order.getStatus());
         return response;

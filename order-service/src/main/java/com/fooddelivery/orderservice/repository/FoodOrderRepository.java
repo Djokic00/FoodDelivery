@@ -13,8 +13,6 @@ import java.util.List;
 
 @Repository
 public interface FoodOrderRepository extends JpaRepository<FoodOrder, Long> {
-    OrderResponseList findByDeletedFalse();
-
     @Query("SELECT new com.fooddelivery.shareddtoservice.dto.response.OrderResponse(o.id, o.customerName, o.totalPrice, o.status) FROM FoodOrder o WHERE o.deleted = false")
     List<OrderResponse> findBasicOrderDetails();
 

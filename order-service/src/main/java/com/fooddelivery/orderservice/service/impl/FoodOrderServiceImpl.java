@@ -101,16 +101,16 @@ public class FoodOrderServiceImpl implements FoodOrderService {
         return new OrderResponseList(orders);
     }
 
-    @KafkaListener(topics = "order-cancellation", groupId = "saga-group")
-    @KafkaHandler
-    public void processOrderCancellationEvent(@Payload Map<String, Object> messagePayload) {
-        try {
-            Long orderId = Long.parseLong((String) messagePayload.get("orderId"));
-            cancelOrder(orderId);
-        } catch (NumberFormatException | ClassCastException e) {
-            System.out.println("Invalid orderId format or orderId is null.");
-        }
-    }
+//    @KafkaListener(topics = "order-cancellation", groupId = "saga-group")
+//    @KafkaHandler
+//    public void processOrderCancellationEvent(@Payload Map<String, Object> messagePayload) {
+//        try {
+//            Long orderId = Long.parseLong((String) messagePayload.get("orderId"));
+//            cancelOrder(orderId);
+//        } catch (NumberFormatException | ClassCastException e) {
+//            System.out.println("Invalid orderId format or orderId is null.");
+//        }
+//    }
 
     @Override
     public void cancelOrder(Long orderId) {

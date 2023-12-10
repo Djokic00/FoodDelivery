@@ -1,3 +1,17 @@
+logging:
+  level:
+    root: INFO
 spring:
+  application:
+    name: "Main Service"
+  output:
+    ansi:
+      enabled: always
   profiles:
     active: dev
+
+server:
+  port: 8080
+  servlet:
+    context-path: "/api"
+

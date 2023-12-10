@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/orders")
@@ -26,6 +28,13 @@ public class FoodOrderController {
     @GetMapping(path = "/getOrders")
     public ResponseEntity<OrderResponseList> getActiveOrders() {
         return ResponseEntity.ok(orderService.getActiveOrders());
+    }
+
+    @PostMapping(path = "/cancelOrder")
+    public ResponseEntity<Void> cancelOrder(@RequestBody Map<String, Long> requestBody) {
+        Long orderId = requestBody.get("orderId");
+        orderService.cancelOrder(orderId);
+        return ResponseEntity.ok().build();
     }
 }
 

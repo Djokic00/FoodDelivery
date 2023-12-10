@@ -14,6 +14,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
+    @Column(name = "order_id")
     private Long orderId;
 
     @Enumerated(EnumType.STRING)

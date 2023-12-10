@@ -21,10 +21,11 @@ public class OrderResponse {
     private OrderStatus status;
     private PaymentMethod paymentMethod;
 
-    public OrderResponse(Long id, String customerName, double totalPrice, OrderStatus status) {
+    public OrderResponse(Long id, String customerName, double totalPrice, OrderStatus status, PaymentMethod paymentMethod) {
         this.id = id;
         this.customerName = customerName;
         this.totalPrice = totalPrice;
         this.status = status;
+        this.paymentMethod = paymentMethod;
     }
 }

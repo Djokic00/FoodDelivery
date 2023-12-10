@@ -1,7 +1,7 @@
 package com.fooddelivery.shareddtoservice.model;
 
 public enum PaymentMethod {
-    VISA_CARD("VISA"),
+    VISA("VISA"),
     PAYPAL("PAYPAL");
 
     private final String status;

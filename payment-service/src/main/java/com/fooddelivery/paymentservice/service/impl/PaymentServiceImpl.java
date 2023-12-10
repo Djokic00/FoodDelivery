@@ -26,7 +26,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @KafkaHandler
     public PaymentResponse processPayment(PaymentRequest paymentRequest) {
-        if (paymentRequest.getPaymentMethod() == PaymentMethod.VISA_CARD && isPaymentSuccessful()) {
+        if (paymentRequest.getPaymentMethod() == PaymentMethod.VISA && isPaymentSuccessful()) {
             Payment savedPayment = paymentRepository.save(paymentMapper.requestToModel(paymentRequest));
             return paymentMapper.modelToResponse(savedPayment);
         } else {

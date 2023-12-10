@@ -13,6 +13,7 @@ public class PaymentMapper {
         payment.setPaymentStatus(PaymentStatus.SUCCESS);
         payment.setAmount(paymentRequest.getAmount());
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
+        payment.setOrderId(paymentRequest.getOrderId());
 
         return payment;
     }

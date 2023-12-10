@@ -103,7 +103,7 @@ public class FoodOrderServiceImpl implements FoodOrderService {
 
     @KafkaListener(topics = "order-cancellation", groupId = "saga-group")
     @KafkaHandler
-    public void processOrderCancellationEvent(@org.jetbrains.annotations.NotNull @Payload Map<String, Object> messagePayload) {
+    public void processOrderCancellationEvent(@Payload Map<String, Object> messagePayload) {
         try {
             Long orderId = Long.parseLong((String) messagePayload.get("orderId"));
             cancelOrder(orderId);
@@ -116,7 +116,7 @@ public class FoodOrderServiceImpl implements FoodOrderService {
     public void cancelOrder(Long orderId) {
         FoodOrder order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Order with given ID is not found"));
         order.setDeleted(true);
-        order.setStatus(OrderStatus.CANCELED_PAYMENT_NOT_SUCCESSFUL); // Assuming you have a CANCELED status
+        order.setStatus(OrderStatus.CANCELED_PAYMENT_NOT_SUCCESSFUL);
         List<FoodItemQuantityResponse> foodItems = foodItemRepository.findFoodItemIdsAndQuantitiesByOrderId(orderId);
         for (FoodItemQuantityResponse foodItem : foodItems) {
             foodItemService.increaseFoodInventory(foodItem.getFoodItemId(), foodItem.getQuantity());

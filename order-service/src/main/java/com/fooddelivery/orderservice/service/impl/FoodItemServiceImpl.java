@@ -7,6 +7,7 @@ import com.fooddelivery.orderservice.repository.FoodItemRepository;
 import com.fooddelivery.orderservice.service.FoodItemService;
 import com.fooddelivery.shareddtoservice.dto.request.FoodItemRequest;
 import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
+import com.fooddelivery.shareddtoservice.dto.response.FoodItemQuantityResponse;
 import com.fooddelivery.shareddtoservice.dto.response.FoodItemResponse;
 import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class FoodItemServiceImpl implements FoodItemService {
     private final FoodItemRepository foodItemRepository;
@@ -60,24 +60,27 @@ public class FoodItemServiceImpl implements FoodItemService {
     }
 
     @Override
-    public FoodItemResponse increaseFoodInventory(Long foodItemId, int quantity) {
-        FoodItem foodItem = foodItemRepository.findById(foodItemId).orElseThrow(() -> {
-            log.error("Food item with given id does not exists '{}'", foodItemId);
-            throw new NotFoundException("Food item with given id does not exists!");
-        });
-        if (foodItem != null) {
-            int newQuantity = foodItem.getQuantity() + quantity;
-            foodItem.setQuantity(newQuantity);
-            foodItemRepository.save(foodItem);
+    public List<FoodItemResponse> increaseFoodInventory(List<FoodItemQuantityResponse> foodItemQuantityResponseList) {
+        List<FoodItemResponse> foodItemResponseList = new ArrayList<>();
+        for (FoodItemQuantityResponse foodItemQuantityResponse: foodItemQuantityResponseList) {
+            FoodItem foodItem = foodItemRepository.findById(foodItemQuantityResponse.getFoodItemId()).orElseThrow(() -> {
+                throw new NotFoundException("Food item with given id does not exists!");
+            });
+            if (foodItem != null) {
+                int newQuantity = foodItem.getQuantity() + foodItemQuantityResponse.getQuantity();
+                foodItem.setQuantity(newQuantity);
+                foodItemRepository.save(foodItem);
+                foodItemResponseList.add(foodMapper.modelToResponse(foodItem));
+            }
         }
-        return foodMapper.modelToResponse(foodItem);
+        return foodItemResponseList;
     }
 
     @Override
-    public List<FoodItemResponse> reduceFoodInventory(OrderResponse foodOrderResponse) {
+    public List<FoodItemResponse> reduceFoodInventory(List<FoodItemResponse> foodItemResponseList) {
         List<FoodItemResponse> updatedFoodItems = new ArrayList<>();
 
-        for (FoodItemResponse foodItemResponse : foodOrderResponse.getFoodItems()) {
+        for (FoodItemResponse foodItemResponse : foodItemResponseList) {
             Optional<FoodItem> optionalFoodItem = foodItemRepository.findByName(foodItemResponse.getName());
             if (optionalFoodItem.isPresent()) {
                 FoodItem foodItem = optionalFoodItem.get();

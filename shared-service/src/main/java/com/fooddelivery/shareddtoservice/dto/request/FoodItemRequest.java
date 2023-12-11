@@ -11,5 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FoodItemRequest {
     private String name;
+    private double price;
     private int quantity;
 }

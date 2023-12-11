@@ -4,6 +4,7 @@ import com.fooddelivery.orderservice.model.FoodItem;
 import com.fooddelivery.orderservice.service.FoodItemService;
 import com.fooddelivery.shareddtoservice.dto.request.FoodItemRequest;
 import com.fooddelivery.shareddtoservice.dto.request.OrderRequest;
+import com.fooddelivery.shareddtoservice.dto.response.FoodItemQuantityResponse;
 import com.fooddelivery.shareddtoservice.dto.response.FoodItemResponse;
 import com.fooddelivery.shareddtoservice.dto.response.OrderResponse;
 import org.springframework.http.ResponseEntity;
@@ -35,13 +36,13 @@ public class FoodItemController {
     }
 
     @PutMapping("/increase-inventory")
-    public ResponseEntity<FoodItemResponse> increaseFoodInventory(@RequestParam Long foodItemId, @RequestParam int quantity) {
-        return ResponseEntity.ok(foodItemService.increaseFoodInventory(foodItemId, quantity));
+    public ResponseEntity<List<FoodItemResponse>> increaseFoodInventory(@RequestBody List<FoodItemQuantityResponse> foodItemQuantityResponseList) {
+        return ResponseEntity.ok(foodItemService.increaseFoodInventory(foodItemQuantityResponseList));
     }
 
     @PutMapping("/reduce-inventory")
-    public ResponseEntity<List<FoodItemResponse>> reduceFoodInventory(@RequestBody OrderResponse foodOrderResponse) {
-        return ResponseEntity.ok(foodItemService.reduceFoodInventory(foodOrderResponse));
+    public ResponseEntity<List<FoodItemResponse>> reduceFoodInventory(@RequestBody List<FoodItemResponse> foodItemResponseList) {
+        return ResponseEntity.ok(foodItemService.reduceFoodInventory(foodItemResponseList));
     }
 }
 

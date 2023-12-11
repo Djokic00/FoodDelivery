@@ -58,7 +58,7 @@ public class FoodOrderServiceImpl implements FoodOrderService {
         double totalPrice = calculateTotalPrice(orderRequest);
         FoodOrder order = orderRepository.save(orderMapper.requestToModel(orderRequest, totalPrice, existingFoodItemMap));
         OrderResponse orderResponse = orderMapper.modelToResponse(order);
-        foodItemService.reduceFoodInventory(orderResponse);
+        foodItemService.reduceFoodInventory(orderResponse.getFoodItems());
         return orderResponse;
     }
 
@@ -118,9 +118,7 @@ public class FoodOrderServiceImpl implements FoodOrderService {
         order.setDeleted(true);
         order.setStatus(OrderStatus.CANCELED_PAYMENT_NOT_SUCCESSFUL);
         List<FoodItemQuantityResponse> foodItems = foodItemRepository.findFoodItemIdsAndQuantitiesByOrderId(orderId);
-        for (FoodItemQuantityResponse foodItem : foodItems) {
-            foodItemService.increaseFoodInventory(foodItem.getFoodItemId(), foodItem.getQuantity());
-        }
+        foodItemService.increaseFoodInventory(foodItems);
         orderRepository.save(order);
         System.out.println("Canceled order with order ID: " + orderId);
     }

@@ -10,6 +10,7 @@ public class FoodItemMapper {
     public FoodItem requestToModel(FoodItemRequest foodItemRequest) {
         FoodItem item = new FoodItem();
         item.setName(foodItemRequest.getName());
+        item.setPrice(foodItemRequest.getPrice());
         item.setQuantity(foodItemRequest.getQuantity());
         return item;
     }

@@ -1,6 +1,5 @@
 spring:
-#  kafka:
-#    bootstrap-servers: kafka-service
+  kafka:
+    bootstrap-servers: kafka-service
 
-order-service-url: "http://order-service:8081/api/orders"
 payment-service-url: "http://payment-service:8082/api/payments"

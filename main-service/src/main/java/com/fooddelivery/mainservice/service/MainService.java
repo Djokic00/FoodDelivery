@@ -75,6 +75,10 @@ public class MainService {
             }
         }
     }
+    private void handleFailedPayment(PaymentResponse paymentResponse) {
+        sagaServiceClient.initiateCompensation(paymentResponse.getOrderId());
+        throw new FailedPaymentException("Payment not successful");
+    }
 
     private PaymentRequest createPaymentRequest(OrderResponse orderResponse) {
         PaymentRequest paymentRequest = new PaymentRequest();
@@ -97,11 +101,6 @@ public class MainService {
 
     private void handleServerErrors() {
         throw new InternalServerErrorException("Internal server error");
-    }
-
-    private void handleFailedPayment(PaymentResponse paymentResponse) {
-        sagaServiceClient.initiateCompensation(paymentResponse.getOrderId());
-        throw new FailedPaymentException("Payment not successful");
     }
 
 }

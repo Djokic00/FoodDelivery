@@ -23,11 +23,11 @@ services:
     ports:
       - "8081:8081"
     environment:
-#      KAFKA_BROKER_URL: "kafka-service:9092"
+      KAFKA_BROKER_URL: "kafka-service:9092"
       SPRING_PROFILES_ACTIVE: prod
     depends_on:
       - order_db
-#      - kafka-service
+      - kafka-service
     networks:
       - my-network
 
@@ -55,29 +55,32 @@ services:
     networks:
       - my-network
 
-#  kafka-service:
-#    image: confluentinc/cp-kafka:latest
-#    ports:
-#      - "9092:9092"
-#    networks:
-#      - my-network
-#    environment:
-#      KAFKA_LISTENERS: "INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9093"
-#      KAFKA_ADVERTISED_LISTENERS: "INSIDE://kafka-service:9092,OUTSIDE://kafka-service:9093"
-#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
-#      KAFKA_INTER_BROKER_LISTENER_NAME: "INSIDE"
-#      KAFKA_ZOOKEEPER_CONNECT: "zookeeper-service:2181"
-#
-#  zookeeper-service:
-#    image: wurstmeister/zookeeper:latest
-#    ports:
-#      - "2181:2181"
-#    networks:
-#      - my-network
-#    ulimits:
-#      nofile:
-#        soft: 65536
-#        hard: 65536
+  kafka-service:
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - "9092:9092"
+    networks:
+      - my-network
+    environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_LISTENERS: "INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9093"
+      KAFKA_ADVERTISED_LISTENERS: "INSIDE://kafka-service:9092,OUTSIDE://kafka-service:9093"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INSIDE"
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper-service:2181"
+
+  zookeeper-service:
+    image: wurstmeister/zookeeper:latest
+    ports:
+      - "2181:2181"
+    networks:
+      - my-network
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
 
   order_db:
     image: postgres:latest

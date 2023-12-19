@@ -1,5 +1,5 @@
 spring:
   datasource:
     url: "jdbc:postgresql://localhost:5432/order_db"
-#  kafka:
-#    bootstrap-servers: localhost:9092
+  kafka:
+    bootstrap-servers: localhost:9092

@@ -67,4 +67,3 @@ This command stops and removes the containers, networks, and volumes created by 
 
 - The application is set up to run using Java 21.
 - If modifications are made to the source code, you may need to rebuild the Docker images using `docker-compose build` or `docker-compose up --build`.
-```
